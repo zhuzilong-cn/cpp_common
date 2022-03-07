@@ -59,7 +59,6 @@ export PATH=${THIRD_LIB}/cmake/bin:${PATH}
 
 # gflags
 cd ${THIRD_SRC}/gflags && rm -rf build && mkdir build && cd build
-rm -rf build && mkdir build && cd build
 cmake -DCMAKE_CXX_FLAGS="-fPIC" -DCMAKE_INSTALL_PREFIX=${THIRD_LIB}/gflags ..
 make -j8 && make install
 
