@@ -43,7 +43,7 @@ git_download https://github.com/apache/incubator-brpc incubator-brpc 1.0.0
 # add_compile_options(-fPIC)
 
 # openssl
-cd ${THIRD_SRC}/openssl
+cd ${THIRD_SRC}/openssl && make clean
 ./Configure --prefix=${THIRD_LIB}/openssl
 make -j8 && make install
 
@@ -101,7 +101,7 @@ make -j8 && make install
 export LD_LIBRARY_PATH=${THIRD_LIB}/snappy/lib:${LD_LIBRARY_PATH}
 
 # brpc
-cd ${THIRD_SRC}/brpc
+cd ${THIRD_SRC}/incubator-brpc
 sh config_brpc.sh --headers=${THIRD_LIB}/*/include/ --libs=${THIRD_LIB}/*/*/
 make -j8 && make install
 mkdir ${THIRD_LIB}/brpc && cp -r output/* ${THIRD_LIB}/brpc
