@@ -39,6 +39,8 @@ git_download https://github.com/protocolbuffers/protobuf protobuf v3.14.0
 git_download https://github.com/google/leveldb leveldb 1.23
 git_download https://github.com/google/snappy snappy 1.1.9
 git_download https://github.com/apache/incubator-brpc incubator-brpc 1.0.0
+git_download https://github.com/swig/swig swig v4.0.2
+git_download https://github.com/facebookresearch/faiss faiss v1.7.2
 
 # add_compile_options(-fPIC)
 
@@ -107,4 +109,19 @@ mkdir ${THIRD_LIB}/brpc && cp -r output/* ${THIRD_LIB}/brpc
 cd example/echo_c++ && make
 
 export LD_LIBRARY_PATH=${THIRD_LIB}/brpc/lib:${LD_LIBRARY_PATH}
+
+# pcre
+cd ${THIRD_SRC} && rm -rf pcre*
+wget --no-check-certificate https://onboardcloud.dl.sourceforge.net/project/pcre/pcre/8.45/pcre-8.45.tar.bz2
+tar xjvf pcre-8.45.tar.bz2
+cd pcre-8.45 && ./configure --prefix=${THIRD_LIB}/pcre
+make -j8 && make install
+
+# swig
+# sudo apt install autoconf automake bison
+cd ${THIRD_SRC}/swig
+./autogen.sh
+./configure --prefix=${THIRD_LIB}/swig --with-pcre-prefix=${THIRD_LIB}/pcre
+make -j8 && make install
+
 
