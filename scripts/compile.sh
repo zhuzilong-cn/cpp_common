@@ -117,6 +117,8 @@ tar xjvf pcre-8.45.tar.bz2
 cd pcre-8.45 && ./configure --prefix=${THIRD_LIB}/pcre
 make -j8 && make install
 
+export LD_LIBRARY_PATH=${THIRD_LIB}/pcre/lib:${LD_LIBRARY_PATH}
+
 # swig
 # sudo apt install autoconf automake bison
 cd ${THIRD_SRC}/swig
@@ -124,4 +126,29 @@ cd ${THIRD_SRC}/swig
 ./configure --prefix=${THIRD_LIB}/swig --with-pcre-prefix=${THIRD_LIB}/pcre
 make -j8 && make install
 
+export PATH=${THIRD_LIB}/swig/bin:${PATH}
+
+# faiss
+sudo apt install intel-mkl
+cd ${THIRD_SRC}/faiss && rm -rf build
+cmake -DCMAKE_CXX_FLAGS="-fPIC" \
+      -DCMAKE_INSTALL_PREFIX=${THIRD_LIB}/faiss \
+      -DFAISS_ENABLE_GPU=OFF \
+      -DBUILD_TESTING=OFF \
+      -DBUILD_SHARED_LIBS=ON \
+      -DFAISS_ENABLE_PYTHON=ON \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DFAISS_OPT_LEVEL=avx2 \
+      -DMKL_LIBRARIES=/usr/lib/x86_64-linux-gnu \
+      -DPython_EXECUTABLE=/home/john/anaconda3/envs/py3.7/bin/python \
+      -B build .
+make -C build -j8 faiss
+make -C build -j8 swigfaiss
+# cd build/faiss/python && python setup.py install
+make -C build install
+
+export LD_LIBRARY_PATH=${THIRD_LIB}/pcre/lib:${LD_LIBRARY_PATH}
+
+# make -C build demo_ivfpq_indexing
+# ./build/demos/demo_ivfpq_indexing
 
