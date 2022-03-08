@@ -129,7 +129,7 @@ make -j8 && make install
 export PATH=${THIRD_LIB}/swig/bin:${PATH}
 
 # faiss
-sudo apt install intel-mkl
+# sudo apt install intel-mkl
 cd ${THIRD_SRC}/faiss && rm -rf build
 cmake -DCMAKE_CXX_FLAGS="-fPIC" \
       -DCMAKE_INSTALL_PREFIX=${THIRD_LIB}/faiss \
@@ -139,8 +139,9 @@ cmake -DCMAKE_CXX_FLAGS="-fPIC" \
       -DFAISS_ENABLE_PYTHON=ON \
       -DCMAKE_BUILD_TYPE=Release \
       -DFAISS_OPT_LEVEL=avx2 \
-      -DMKL_LIBRARIES=/usr/lib/x86_64-linux-gnu \
-      -DPython_EXECUTABLE=/home/john/anaconda3/envs/py3.7/bin/python \
+      -DBLA_VENDOR=Intel10_64_dyn \
+      -DMKL_LIBRARIES="/usr/lib/x86_64-linux-gnu/libmkl_rt.so;-lpthread;-lm;-ldl" \
+      -DPython_EXECUTABLE="/home/john/anaconda3/envs/py3.7/bin/python" \
       -B build .
 make -C build -j8 faiss
 make -C build -j8 swigfaiss
@@ -149,6 +150,9 @@ make -C build install
 
 export LD_LIBRARY_PATH=${THIRD_LIB}/pcre/lib:${LD_LIBRARY_PATH}
 
-# make -C build demo_ivfpq_indexing
-# ./build/demos/demo_ivfpq_indexing
+make -C build demo_ivfpq_indexing
+./build/demos/demo_ivfpq_indexing
+
+export LD_LIBRARY_PATH=${THIRD_LIB}/faiss/lib:${LD_LIBRARY_PATH}
+
 
