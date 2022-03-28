@@ -58,6 +58,8 @@ git_download https://github.com/Tessil/robin-map robin-map v0.6.3
 git_download https://github.com/yandaren/zk_cpp zk_cpp
 git_download https://github.com/mavam/libbf libbf v1.0.0
 
+git_download https://github.com/boostorg/boost boost boost-1.78.0
+
 # add_compile_options(-fPIC)
 
 # openssl
@@ -172,7 +174,7 @@ export PATH=${THIRD_LIB}/swig/bin:${PATH}
 # faiss
 # sudo apt install intel-mkl
 if [ ! -d ${THIRD_LIB}/faiss ]; then
-cd ${THIRD_SRC}/faiss && rm -rf build
+  cd ${THIRD_SRC}/faiss && rm -rf build
   cmake -DCMAKE_CXX_FLAGS="-fPIC" \
         -DCMAKE_INSTALL_PREFIX=${THIRD_LIB}/faiss \
         -DFAISS_ENABLE_GPU=OFF \
@@ -199,4 +201,37 @@ else
 fi
 export LD_LIBRARY_PATH=${THIRD_LIB}/faiss/lib:${LD_LIBRARY_PATH}
 
+# spdlog
+if [ ! -d ${THIRD_LIB}/spdlog ]; then
+  cd ${THIRD_SRC}/spdlog && rm -rf build && mkdir build && cd build
+  cmake -DCMAKE_CXX_FLAGS="-fPIC" \
+        -DCMAKE_INSTALL_PREFIX=${THIRD_LIB}/spdlog ..
+  make -j8 && make install
+fi
+export LD_LIBRARY_PATH=${THIRD_LIB}/spdlog/lib:${LD_LIBRARY_PATH}
 
+# fmt
+if [ ! -d ${THIRD_LIB}/fmt ]; then
+  cd ${THIRD_SRC}/fmt && rm -rf build && mkdir build && cd build
+  cmake -DCMAKE_CXX_FLAGS="-fPIC" \
+        -DFMT_TEST=OFF \
+        -DCMAKE_INSTALL_PREFIX=${THIRD_LIB}/fmt ..
+  make -j8 && make install
+fi
+export LD_LIBRARY_PATH=${THIRD_LIB}/fmt/lib:${LD_LIBRARY_PATH}
+
+# libbf
+if [ ! -d ${THIRD_LIB}/libbf ]; then
+  cd ${THIRD_SRC}/libbf
+  ./configure --prefix=${THIRD_LIB}/libbf
+  make && make install
+fi
+export LD_LIBRARY_PATH=${THIRD_LIB}/libbf/lib:${LD_LIBRARY_PATH}
+
+# robin_map
+# if [ ! -d ${THIRD_LIB}/robin-map ]; then
+#   cd ${THIRD_SRC}/robin-map/tests && mkdir build && cd build
+#   cmake ..
+#   make -j8
+#   ./tsl_robin_map_tests
+# fi
